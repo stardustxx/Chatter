@@ -1,0 +1,33 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.sdust.chatter.profileActivity">
+
+    <include
+        layout="@layout/app_bar"
+        android:id="@+id/appBar"
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/profilePostList"
+        android:layout_below="@+id/appBar"
+        android:scrollbars="vertical"
+        >
+    </android.support.v7.widget.RecyclerView>
+
+    <!--<android.support.v7.widget.GridLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:id="@+id/gridLayout"-->
+        <!--app:columnCount="3"-->
+        <!-->-->
+
+
+
+    <!--</android.support.v7.widget.GridLayout>-->
+
+</RelativeLayout>

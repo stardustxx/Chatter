@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Chatter</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_new">newActivity</string>
+    <string name="title_activity_navigation_drawer">navigationDrawerActivity</string>
+
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_feed">FeedActivity</string>
+    <string name="title_activity_feed_detail">feedDetail</string>
+    <string name="title_activity_sign_up">SignUp</string>
+    
+    <string name="registerBtn">Register</string>
+    <string name="signInBtn">Sign In</string>
+    <string name="title_activity_login">LoginActivity</string>
+
+    <string name="email_hint">Email</string>
+    <string name="username_hint">Username</string>
+    <string name="password_hint">Password</string>
+    <string name="password_confirm_hint">Retype Password</string>
+    <string name="title_activity_splash">splashActivity</string>
+
+    <string name="menu_title_profile">Profile</string>
+    <string name="menu_title_currentUser">Current User</string>
+    <string name="menu_title_logoff">Log Off</string>
+    <string name="title_activity_profile">profileActivity</string>
+
+    <string name="new_menu_post">Post</string>
+</resources>

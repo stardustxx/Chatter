@@ -1,0 +1,115 @@
+package com.sdust.chatter;
+
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import com.parse.ParseException;
+import com.parse.ParseGeoPoint;
+import com.parse.ParseUser;
+import com.parse.SignUpCallback;
+
+
+public class SignUp extends ActionBarActivity {
+    EditText emailTxt, usernameTxt, passwordTxt, passwordConfirmTxt;
+    Button registerBtn;
+    ParseUser User = new ParseUser();
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sign_up);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.appBar);
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        emailTxt = (EditText) findViewById(R.id.email);
+        usernameTxt = (EditText) findViewById(R.id.username);
+        passwordTxt = (EditText) findViewById(R.id.password);
+        passwordConfirmTxt = (EditText) findViewById(R.id.passwordConfirm);
+        registerBtn = (Button) findViewById(R.id.registerBtn);
+
+        registerBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = emailTxt.getText().toString();
+                String username = usernameTxt.getText().toString();
+                String password = passwordTxt.getText().toString();
+                String passwordConfirm = passwordConfirmTxt.getText().toString();
+
+                Log.d("email", email);
+                Log.d("username", username);
+                Log.d("password", password);
+                Log.d("password confirm", passwordConfirm);
+
+                if (email.equals("")){
+                    Toast.makeText(SignUp.this, "Please fill out your email", Toast.LENGTH_SHORT).show();
+                }
+                else if (username.equals("")){
+                    Toast.makeText(SignUp.this, "Please fill out your username", Toast.LENGTH_SHORT).show();
+                }
+                else if (password.equals("") || password.length() < 6){
+                    Toast.makeText(SignUp.this, "Please check your password to be at least 6 letters", Toast.LENGTH_SHORT).show();
+                }
+                else if (!passwordConfirm.equals(password)){
+                    Toast.makeText(SignUp.this, "Please confirm your password", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    registration(username, email, password);
+                }
+            }
+        });
+    }
+
+    private void registration(String username, String email, String password){
+        ParseGeoPoint currentLocation = new ParseGeoPoint(20, 20);
+        User.setUsername(username);
+        User.setEmail(email);
+        User.setPassword(password);
+        User.put("Location", currentLocation);
+        User.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null){
+                    Toast.makeText(SignUp.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                    SignUp.this.finish();
+                }
+                else {
+                    Toast.makeText(SignUp.this, "Something is wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_sign_up, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+}
