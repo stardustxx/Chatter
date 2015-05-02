@@ -25,11 +25,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by Eric on 3/4/2015.
- */
-
-public class itemViewProfileAdapter extends RecyclerView.Adapter<itemViewProfileAdapter.myViewHolder> {
+public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private LayoutInflater inflater;
     List<ParseObject> feedItemList;
@@ -45,10 +41,7 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<itemViewProfile
     }
 
     @Override
-    public myViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View item = inflater.inflate(R.layout.custom_profile_row, viewGroup, false);
-        myViewHolder myViewHolder = new myViewHolder(item);
-
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Getting display size
         WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = windowManager.getDefaultDisplay();
@@ -57,19 +50,44 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<itemViewProfile
         picWidth = size.x;
         picHeight = picWidth;
 
-        return myViewHolder;
+        if (viewType == 0){
+            View item = inflater.inflate(R.layout.profileinfo, viewGroup, false);
+            return new profileInfoViewHolder(item);
+        }
+        else {
+            View item = inflater.inflate(R.layout.custom_profile_row, viewGroup, false);
+            return new myViewHolder(item);
+        }
     }
 
     @Override
-    public void onBindViewHolder(myViewHolder viewHolder, int position) {
-        ParseObject current = feedItemList.get(position);
-        viewHolder.feedDesc.setText(current.get("Description").toString());
-//        viewHolder.feedUser.setText(current.get("User").toString());
-//        viewHolder.numberOfLikes.setText(Integer.toString(current.getInt("Likes")));
-        ParseFile feedImage = (ParseFile) current.get("feedImage");
-        Log.d("feedImage profile", feedImage.getUrl());
-        Picasso.with(context).load(feedImage.getUrl()).placeholder(R.drawable.twitter).resize(picWidth, picHeight).centerCrop().into(viewHolder.imageView);
-        //viewHolder.imageView.setImageResource(current.iconID);
+    public int getItemViewType(int position) {
+        if (position == 0){
+            return 0;
+        }
+        else {
+            return position;
+        }
+    }
+
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        if (viewHolder instanceof profileInfoViewHolder){
+            String currentUsername = ParseUser.getCurrentUser().getUsername();
+            ((profileInfoViewHolder) viewHolder).userName.setText(currentUsername);
+            // Need code for grabbing profile pic which I don't have right now
+        }
+        else if (viewHolder instanceof myViewHolder){
+            ParseObject current = feedItemList.get(position - 1);
+            ((myViewHolder) viewHolder).feedDesc.setText(current.get("Description").toString());
+//            viewHolder.feedUser.setText(current.get("User").toString());
+//            viewHolder.numberOfLikes.setText(Integer.toString(current.getInt("Likes")));
+            ParseFile feedImage = (ParseFile) current.get("feedImage");
+            Log.d("feedImage profile", feedImage.getUrl());
+            Picasso.with(context).load(feedImage.getUrl()).placeholder(R.drawable.twitter).resize(picWidth, picHeight).centerCrop().into(((myViewHolder) viewHolder).postImage);
+            //viewHolder.imageView.setImageResource(current.iconID);
+        }
     }
 
     public void addItem(List<ParseObject> newItems){
@@ -85,13 +103,24 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<itemViewProfile
 
     @Override
     public int getItemCount() {
-        return feedItemList.size();
+        return feedItemList.size() + 1;
+    }
+
+    class profileInfoViewHolder extends RecyclerView.ViewHolder {
+        TextView userName, userDesc;
+        ImageView userPic;
+
+        public profileInfoViewHolder(View itemView) {
+            super(itemView);
+            userName = (TextView) itemView.findViewById(R.id.profileName);
+            userPic = (ImageView) itemView.findViewById(R.id.profileImage);
+        }
     }
 
 //    class myViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
     class myViewHolder extends RecyclerView.ViewHolder {
         TextView feedDesc, feedUser, numberOfLikes;
-        ImageView imageView;
+        ImageView postImage;
 
         public myViewHolder(View itemView) {
             super(itemView);
@@ -99,7 +128,7 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<itemViewProfile
             feedDesc = (TextView) itemView.findViewById(R.id.feedDesc);
 //            feedUser = (TextView) itemView.findViewById(R.id.nickname);
 //            numberOfLikes = (TextView) itemView.findViewById(R.id.numberOfLikes);
-            imageView = (ImageView) itemView.findViewById(R.id.feedImage);
+            postImage = (ImageView) itemView.findViewById(R.id.feedImage);
         }
 
 //        @Override
