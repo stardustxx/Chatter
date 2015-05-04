@@ -2,6 +2,7 @@ package com.sdust.chatter;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Display;
@@ -12,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -24,10 +26,6 @@ import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-
-/**
- * Created by Eric on 3/4/2015.
- */
 
 public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myViewHolder> {
 
@@ -42,6 +40,7 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
         inflater = LayoutInflater.from(context);
         this.feedItemList = feedItemList;
         this.context = context;
+//        Fresco.initialize(context);
     }
 
     @Override
@@ -68,8 +67,7 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
         viewHolder.numberOfLikes.setText(Integer.toString(current.getInt("Likes")));
         ParseFile feedImage = (ParseFile) current.get("feedImage");
         Log.d("feedImage", feedImage.getUrl());
-        Picasso.with(context).load(feedImage.getUrl()).placeholder(R.drawable.twitter).resize(picWidth, picHeight).centerCrop().into(viewHolder.imageView);
-        //viewHolder.imageView.setImageResource(current.iconID);
+        Glide.with(context).load(feedImage.getUrl()).placeholder(R.drawable.twitter).override(picWidth, picHeight).centerCrop().crossFade().into(viewHolder.imageView);
     }
 
     public void addItem(List<ParseObject> newItems){
@@ -77,11 +75,6 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
         notifyItemInserted(feedItemList.size());
         Log.d("List Size", Integer.toString(feedItemList.size()));
     }
-
-//    public void addItem(ParseObject newItems){
-//        feedItemList.add(newItems);
-//        notifyItemInserted(feedItemList.size());
-//    }
 
     @Override
     public int getItemCount() {
@@ -91,6 +84,7 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
     class myViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView feedDesc, feedUser, numberOfLikes;
         ImageView imageView;
+//        SimpleDraweeView draweeView;
 
         public myViewHolder(View itemView) {
             super(itemView);
@@ -99,6 +93,7 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
             feedUser = (TextView) itemView.findViewById(R.id.nickname);
             numberOfLikes = (TextView) itemView.findViewById(R.id.numberOfLikes);
             imageView = (ImageView) itemView.findViewById(R.id.feedImage);
+//            draweeView = (SimpleDraweeView) itemView.findViewById(R.id.feedImage);
         }
 
         @Override
@@ -183,7 +178,7 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
 
     public interface ClickListener {
 //        public void itemClicked(View view, int position, String objectId);
-        public void itemClicked(View view, String objectId);
+        void itemClicked(View view, String objectId);
     }
 
     public void setClickListener(ClickListener clickListener){

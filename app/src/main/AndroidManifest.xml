@@ -85,8 +85,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sdust.chatter.MainActivity" />
         </activity>
-        <meta-data android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="9d98e70c0b7a367c91fea34d1ddb1ccc00823917" />

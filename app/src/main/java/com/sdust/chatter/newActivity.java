@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
@@ -35,7 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class newActivity extends ActionBarActivity {
+public class newActivity extends AppCompatActivity {
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
@@ -48,6 +49,7 @@ public class newActivity extends ActionBarActivity {
     EditText desBox;
     ImageView postImage;
     File mediaFile;
+//    SimpleDraweeView draweeView;
     byte[] imageByte;
     int picWidth, picHeight;
 
@@ -63,6 +65,8 @@ public class newActivity extends ActionBarActivity {
                     options.inSampleSize = 4;                                   // Reduced size of the taken picture by 0.25
                     Log.d("mediaFile getPath()", mediaFile.getPath());
                     Bitmap image = BitmapFactory.decodeFile(mediaFile.getPath(), options);
+//                    Uri uri = Uri.parse(mediaFile.getPath());
+//                    draweeView.setImageURI(uri);
                     Picasso.with(newActivity.this).load("file:///" + mediaFile.getPath()).resize(picWidth, picHeight).centerCrop().into(postImage);
                     //postImage.setImageBitmap(image);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream(); // Convert image to byte
@@ -97,6 +101,7 @@ public class newActivity extends ActionBarActivity {
         desBox = (EditText) findViewById(R.id.desBox);
         postBtn = (Button) findViewById(R.id.postBtn);
         postImage = (ImageView) findViewById(R.id.postImage);
+//        postImage = (SimpleDraweeView) findViewById(R.id.postImage);
 
         postBtn.setOnClickListener(new View.OnClickListener() {
             @Override

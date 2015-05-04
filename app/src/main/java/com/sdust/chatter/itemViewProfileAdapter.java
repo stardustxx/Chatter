@@ -12,16 +12,10 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.parse.DeleteCallback;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
+import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -30,14 +24,16 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     private LayoutInflater inflater;
     List<ParseObject> feedItemList;
     Context context;
+    ParseUser profileUser;
     int picWidth, picHeight;
 
 //    public ClickListener clickListener;
 
-    public itemViewProfileAdapter(Context context, List<ParseObject> feedItemList){
+    public itemViewProfileAdapter(Context context, List<ParseObject> feedItemList, ParseUser profileUser){
         inflater = LayoutInflater.from(context);
         this.feedItemList = feedItemList;
         this.context = context;
+        this.profileUser = profileUser;
     }
 
     @Override
@@ -74,8 +70,12 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (viewHolder instanceof profileInfoViewHolder){
-            String currentUsername = ParseUser.getCurrentUser().getUsername();
+            String currentUsername = profileUser.getUsername();
+
             ((profileInfoViewHolder) viewHolder).userName.setText(currentUsername);
+
+            //Find drawable for the scenery
+            Glide.with(context).load(R.drawable.scenery).into(((profileInfoViewHolder) viewHolder).profileBackground);
             // Need code for grabbing profile pic which I don't have right now
         }
         else if (viewHolder instanceof myViewHolder){
@@ -85,8 +85,7 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 //            viewHolder.numberOfLikes.setText(Integer.toString(current.getInt("Likes")));
             ParseFile feedImage = (ParseFile) current.get("feedImage");
             Log.d("feedImage profile", feedImage.getUrl());
-            Picasso.with(context).load(feedImage.getUrl()).placeholder(R.drawable.twitter).resize(picWidth, picHeight).centerCrop().into(((myViewHolder) viewHolder).postImage);
-            //viewHolder.imageView.setImageResource(current.iconID);
+            Glide.with(context).load(feedImage.getUrl()).placeholder(R.drawable.twitter).override(picWidth, picHeight).centerCrop().into(((myViewHolder) viewHolder).postImage);
         }
     }
 
@@ -96,11 +95,6 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         Log.d("List Size", Integer.toString(feedItemList.size()));
     }
 
-//    public void addItem(ParseObject newItems){
-//        feedItemList.add(newItems);
-//        notifyItemInserted(feedItemList.size());
-//    }
-
     @Override
     public int getItemCount() {
         return feedItemList.size() + 1;
@@ -108,12 +102,13 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     class profileInfoViewHolder extends RecyclerView.ViewHolder {
         TextView userName, userDesc;
-        ImageView userPic;
+        ImageView userPic, profileBackground;
 
         public profileInfoViewHolder(View itemView) {
             super(itemView);
             userName = (TextView) itemView.findViewById(R.id.profileName);
             userPic = (ImageView) itemView.findViewById(R.id.profileImage);
+            profileBackground = (ImageView) itemView.findViewById(R.id.profileBackground);
         }
     }
 
@@ -121,6 +116,7 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     class myViewHolder extends RecyclerView.ViewHolder {
         TextView feedDesc, feedUser, numberOfLikes;
         ImageView postImage;
+//        SimpleDraweeView draweeView;
 
         public myViewHolder(View itemView) {
             super(itemView);
@@ -129,6 +125,7 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 //            feedUser = (TextView) itemView.findViewById(R.id.nickname);
 //            numberOfLikes = (TextView) itemView.findViewById(R.id.numberOfLikes);
             postImage = (ImageView) itemView.findViewById(R.id.feedImage);
+//            draweeView = (SimpleDraweeView) itemView.findViewById(R.id.feedImage);
         }
 
 //        @Override

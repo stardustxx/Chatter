@@ -3,25 +3,39 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/scenery"
+        android:layout_marginTop="0dp"
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
+        android:id="@+id/profileBackground"
+        />
+
+
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/profileImage"
         android:maxHeight="100dp"
         android:adjustViewBounds="true"
         android:src="@drawable/twitter"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:gravity="center"
         android:textSize="30sp"
         android:textStyle="bold"
         android:id="@+id/profileName"
         android:text="sample"
         android:layout_below="@+id/profileImage"
+        android:textColor="#FFFFFF"
+        android:layout_centerHorizontal="true"
         />
+
 
 </RelativeLayout>

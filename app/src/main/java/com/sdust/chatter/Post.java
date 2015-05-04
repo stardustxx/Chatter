@@ -19,9 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 
-/**
- * Created by Eric on 4/25/2015.
- */
 public class Post extends Observable{
     private RecyclerView recyclerView;
     public itemViewAdapter itemViewAdapter;
@@ -138,7 +135,7 @@ public class Post extends Observable{
                     lastPositionDate = posts.get(posts.size() - 1).getCreatedAt();      // Save the last item's created-at date
                 }
                 else {
-                    itemViewProfileAdapter = new itemViewProfileAdapter(context, posts);
+                    itemViewProfileAdapter = new itemViewProfileAdapter(context, posts, ParseUser.getCurrentUser());
                     recyclerView.setAdapter(itemViewProfileAdapter);
 //                                itemViewProfileAdapter.setClickListener(MainActivity.this);                // Set on click listener on the post, may be used in the future
                     lastPositionDate = posts.get(posts.size() - 1).getCreatedAt();      // Save the last item's created-at date

@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        Fresco.initialize(this);                            // Initialize Facebook Fresco
         setContentView(R.layout.activity_main);
 
         //Parse.enableLocalDatastore(this);
@@ -177,9 +178,7 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
                             ParseUser.getCurrentUser().refreshInBackground(new RefreshCallback() {
                                 @Override
                                 public void done(ParseObject parseObject, ParseException e) {
-                                    if (e == null) {
-
-                                    } else {
+                                    if (e != null) {
                                         Log.d("um", "um");
                                     }
                                 }

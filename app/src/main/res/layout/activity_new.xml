@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.sdust.chatter.newActivity"
     android:id="@+id/newRelativeLayout">
@@ -7,7 +8,7 @@
     <include
         layout="@layout/app_bar"
         android:id="@+id/appBar"
-        ></include>
+        />
 
     <ImageView
         android:layout_width="match_parent"
