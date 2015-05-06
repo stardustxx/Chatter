@@ -21,7 +21,7 @@
     <string name="title_activity_feed_detail">feedDetail</string>
     <string name="title_activity_sign_up">SignUp</string>
     
-    <string name="registerBtn">Register</string>
+    <string name="registerBtn">Sign Up</string>
     <string name="signInBtn">Sign In</string>
     <string name="title_activity_login">LoginActivity</string>
 

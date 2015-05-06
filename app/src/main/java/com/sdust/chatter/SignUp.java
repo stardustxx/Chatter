@@ -2,6 +2,7 @@ package com.sdust.chatter;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -17,7 +18,7 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 
-public class SignUp extends ActionBarActivity {
+public class SignUp extends AppCompatActivity {
     EditText emailTxt, usernameTxt, passwordTxt, passwordConfirmTxt;
     Button registerBtn;
     ParseUser User = new ParseUser();
@@ -28,6 +29,7 @@ public class SignUp extends ActionBarActivity {
         setContentView(R.layout.activity_sign_up);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.appBar);
+        toolbar.setTitle("Sign Up");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -94,7 +96,7 @@ public class SignUp extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_sign_up, menu);
+//        getMenuInflater().inflate(R.menu.menu_sign_up, menu);
         return true;
     }
 
@@ -103,12 +105,12 @@ public class SignUp extends ActionBarActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -3,6 +3,7 @@ package com.sdust.chatter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,11 +18,10 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends AppCompatActivity {
 
     EditText usernameTxt, passwordTxt;
     Button signInBtn, registerBtn;
-    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,8 +30,6 @@ public class LoginActivity extends ActionBarActivity {
 
         Parse.initialize(this, "9ogtClP8xsagmHwDmKDLdGg5ePhMO6CLRxfLBVBr", "qaEYIw54lqUrB7xdvp2OJNkB5znLlKFI75mxv5tt");
         ParseUser User = new ParseUser();
-        toolbar = (Toolbar) findViewById(R.id.appBar);
-        setSupportActionBar(toolbar);
 
         ParseUser currentUser = User.getCurrentUser();
         if (currentUser != null){
@@ -82,7 +80,7 @@ public class LoginActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
+//        getMenuInflater().inflate(R.menu.menu_login, menu);
         return true;
     }
 
@@ -91,12 +89,12 @@ public class LoginActivity extends ActionBarActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }
