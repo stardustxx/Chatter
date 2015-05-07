@@ -40,7 +40,7 @@
                 android:layout_below="@+id/nickname"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="36dp"
+                android:layout_marginTop="40dp"
                 />
 
             <TextView
@@ -50,7 +50,8 @@
                 android:id = "@+id/feedDesc"
                 android:layout_below="@+id/feedImage"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="12dp"
+                android:layout_margin="15dp"
+                android:textSize="15sp"
                 />
 
             <TextView
