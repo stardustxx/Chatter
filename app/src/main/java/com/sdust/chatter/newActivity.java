@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -67,7 +68,8 @@ public class newActivity extends AppCompatActivity {
                     Bitmap image = BitmapFactory.decodeFile(mediaFile.getPath(), options);
 //                    Uri uri = Uri.parse(mediaFile.getPath());
 //                    draweeView.setImageURI(uri);
-                    Picasso.with(newActivity.this).load("file:///" + mediaFile.getPath()).resize(picWidth, picHeight).centerCrop().into(postImage);
+                    Glide.with(newActivity.this).load(mediaFile.getPath()).override(picWidth, picHeight).centerCrop().crossFade().into(postImage);
+//                    Picasso.with(newActivity.this).load("file:///" + mediaFile.getPath()).resize(picWidth, picHeight).centerCrop().into(postImage);
                     //postImage.setImageBitmap(image);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream(); // Convert image to byte
                     image.compress(Bitmap.CompressFormat.JPEG, 80, stream);     // Compress image to lower quality
@@ -94,6 +96,7 @@ public class newActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.appBar);
+        toolbar.setTitle("Creating new post");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
