@@ -10,7 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,7 +28,6 @@ import com.bumptech.glide.Glide;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
-import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -42,15 +40,15 @@ public class newActivity extends AppCompatActivity {
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private static final int CHOOSE_IMAGE_REQUEST = 200;
 
     Button shutterBtn;
-    Button postBtn;
+    Button photoBtn;
     Uri fileUri;
     TextView desLabel;
     EditText desBox;
     ImageView postImage;
     File mediaFile;
-//    SimpleDraweeView draweeView;
     byte[] imageByte;
     int picWidth, picHeight;
 
@@ -66,11 +64,7 @@ public class newActivity extends AppCompatActivity {
                     options.inSampleSize = 4;                                   // Reduced size of the taken picture by 0.25
                     Log.d("mediaFile getPath()", mediaFile.getPath());
                     Bitmap image = BitmapFactory.decodeFile(mediaFile.getPath(), options);
-//                    Uri uri = Uri.parse(mediaFile.getPath());
-//                    draweeView.setImageURI(uri);
                     Glide.with(newActivity.this).load(mediaFile.getPath()).override(picWidth, picHeight).centerCrop().crossFade().into(postImage);
-//                    Picasso.with(newActivity.this).load("file:///" + mediaFile.getPath()).resize(picWidth, picHeight).centerCrop().into(postImage);
-                    //postImage.setImageBitmap(image);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream(); // Convert image to byte
                     image.compress(Bitmap.CompressFormat.JPEG, 80, stream);     // Compress image to lower quality
                     imageByte = stream.toByteArray();
@@ -86,7 +80,30 @@ public class newActivity extends AppCompatActivity {
                     break;
             }
         }
-
+        else if (requestCode == CHOOSE_IMAGE_REQUEST){
+            switch(resultCode){
+                case Activity.RESULT_OK:
+                    Uri uri = data.getData();
+                    Glide.with(newActivity.this).load(uri).override(picWidth, picHeight).centerCrop().crossFade().into(postImage);
+                    try {
+                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        imageByte = stream.toByteArray();
+                        feedImage = new ParseFile("Chatter.jpg", imageByte);
+                        feedImage.saveInBackground();
+                        Toast.makeText(newActivity.this, "Image selected", Toast.LENGTH_SHORT).show();
+                    }
+                    catch (Exception e){
+                        Log.d("error", e.toString());
+                    }
+                    break;
+                case Activity.RESULT_CANCELED:
+                    Log.d("choose image", "canceled");
+                    break;
+                default:
+                    Log.d("choose image default", "nothing to see");
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -102,14 +119,18 @@ public class newActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         windowsSize();
         desBox = (EditText) findViewById(R.id.desBox);
-        postBtn = (Button) findViewById(R.id.postBtn);
         postImage = (ImageView) findViewById(R.id.postImage);
-//        postImage = (SimpleDraweeView) findViewById(R.id.postImage);
 
-        postBtn.setOnClickListener(new View.OnClickListener() {
+        photoBtn = (Button) findViewById(R.id.photoBtn);
+        photoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                uploadPost();
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                // show only images and nothing else
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                // Always shows the chooser if multiple options are available
+                startActivityForResult(Intent.createChooser(intent, "Select image"), CHOOSE_IMAGE_REQUEST);
             }
         });
 
