@@ -88,6 +88,7 @@ public class newActivity extends AppCompatActivity {
                     try {
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
                         imageByte = stream.toByteArray();
                         feedImage = new ParseFile("Chatter.jpg", imageByte);
                         feedImage.saveInBackground();
