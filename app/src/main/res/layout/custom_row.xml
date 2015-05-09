@@ -22,13 +22,15 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textStyle="bold"
                 android:text="nickname"
                 android:id="@+id/nickname"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="10dp"
+                android:textSize="24sp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginStart="16dp"
                 />
 
             <ImageView
@@ -38,44 +40,40 @@
                 android:id="@+id/feedImage"
                 android:adjustViewBounds="true"
                 android:layout_below="@+id/nickname"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="0dp"
                 />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="lalala"
+                android:text="Post Description goes here"
                 android:id = "@+id/feedDesc"
                 android:layout_below="@+id/feedImage"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="15dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="24dp"
                 android:textSize="15sp"
                 />
+            
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_favorite_outline_grey600_24dp"
+                android:id="@+id/heart"
+                android:layout_marginEnd="16dp"
+                android:layout_alignBottom="@+id/nickname"
+                android:layout_alignParentEnd="true" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="Like"
-                android:id="@+id/like"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:text="#"
+                android:text="120"
                 android:id="@+id/numberOfLikes"
-                android:layout_alignParentTop="true"
-                android:layout_toStartOf="@+id/like"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp" />
+                android:textSize="20sp"
+                android:layout_alignBottom="@+id/heart"
+                android:layout_toStartOf="@+id/heart" />
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>

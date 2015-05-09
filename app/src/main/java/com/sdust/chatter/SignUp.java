@@ -53,11 +53,11 @@ public class SignUp extends AppCompatActivity {
                 Log.d("password", password);
                 Log.d("password confirm", passwordConfirm);
 
-                if (email.equals("")){
-                    Toast.makeText(SignUp.this, "Please fill out your email", Toast.LENGTH_SHORT).show();
-                }
-                else if (username.equals("")){
+                if (username.equals("")){
                     Toast.makeText(SignUp.this, "Please fill out your username", Toast.LENGTH_SHORT).show();
+                }
+                else if (email.equals("")){
+                    Toast.makeText(SignUp.this, "Please fill out your email", Toast.LENGTH_SHORT).show();
                 }
                 else if (password.equals("") || password.length() < 6){
                     Toast.makeText(SignUp.this, "Please check your password to be at least 6 letters", Toast.LENGTH_SHORT).show();

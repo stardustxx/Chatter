@@ -65,6 +65,7 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
         viewHolder.feedDesc.setText(current.get("Description").toString());
         viewHolder.feedUser.setText(current.get("User").toString());
         viewHolder.numberOfLikes.setText(Integer.toString(current.getInt("Likes")));
+        viewHolder.updatePostLikes(current.getObjectId(), true);
         ParseFile feedImage = (ParseFile) current.get("feedImage");
         Log.d("feedImage", feedImage.getUrl());
         Glide.with(context).load(feedImage.getUrl()).placeholder(R.drawable.twitter).override(picWidth, picHeight).centerCrop().crossFade().into(viewHolder.imageView);
@@ -84,7 +85,7 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
     class myViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView feedDesc, feedUser, numberOfLikes;
         ImageView imageView;
-//        SimpleDraweeView draweeView;
+        ImageView heartImage;
 
         public myViewHolder(View itemView) {
             super(itemView);
@@ -93,6 +94,7 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
             feedUser = (TextView) itemView.findViewById(R.id.nickname);
             numberOfLikes = (TextView) itemView.findViewById(R.id.numberOfLikes);
             imageView = (ImageView) itemView.findViewById(R.id.feedImage);
+            heartImage = (ImageView) itemView.findViewById(R.id.heart);
 //            draweeView = (SimpleDraweeView) itemView.findViewById(R.id.feedImage);
         }
 
@@ -124,7 +126,8 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
                             parseObjects.get(0).deleteInBackground(new DeleteCallback() {
                                 @Override
                                 public void done(ParseException e) {
-                                    updatePostLikes(postID);
+                                    updatePostLikes(postID, false);
+                                    Glide.with(context).load(R.drawable.ic_favorite_outline_grey600_24dp).into(heartImage);
                                 }
                             });
                         }
@@ -137,7 +140,8 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
                             likes.saveInBackground(new SaveCallback() {
                                 @Override
                                 public void done(ParseException e) {
-                                    updatePostLikes(postID);
+                                    updatePostLikes(postID, false);
+                                    Glide.with(context).load(R.drawable.ic_favorite_grey600_24dp).into(heartImage);
                                 }
                             });
                         }
@@ -149,30 +153,56 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
             });
         }
 
-        public void updatePostLikes(final String postID){
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Likes");
-            query.whereEqualTo("Post", postID);
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> parseObjects, ParseException e) {
-                    if (e == null){
-                        final int resultSize = parseObjects.size();
-                        numberOfLikes.setText(Integer.toString(resultSize));
-                        Log.d("resultsize", Integer.toString(resultSize));
-                        ParseQuery<ParseObject> postQuery = ParseQuery.getQuery("Post");
-                        postQuery.getInBackground(postID, new GetCallback<ParseObject>() {
-                            @Override
-                            public void done(ParseObject parseObject, ParseException e) {
-                                if (e == null){
-                                    parseObject.put("Likes", resultSize);
-                                    parseObject.saveInBackground();
+        public void updatePostLikes(final String postID, Boolean checking){
+            if (!checking) {
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Likes");
+                query.whereEqualTo("Post", postID);
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> parseObjects, ParseException e) {
+                        if (e == null) {
+                            final int resultSize = parseObjects.size();
+                            numberOfLikes.setText(Integer.toString(resultSize));
+                            Log.d("resultsize", Integer.toString(resultSize));
+                            ParseQuery<ParseObject> postQuery = ParseQuery.getQuery("Post");
+                            postQuery.getInBackground(postID, new GetCallback<ParseObject>() {
+                                @Override
+                                public void done(ParseObject parseObject, ParseException e) {
+                                    if (e == null) {
+                                        parseObject.put("Likes", resultSize);
+                                        parseObject.saveInBackground();
 //                                    numberOfLikes.setText(Integer.toString(resultSize));
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }
+            else {
+                Log.d("updatepostlikes", "updating");
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Likes");
+                query.whereEqualTo("Post", postID);
+                query.whereEqualTo("User", ParseUser.getCurrentUser());
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> list, ParseException e) {
+                        if (e == null){
+                            if (list.size() == 0){
+                                Glide.with(context).load(R.drawable.ic_favorite_outline_grey600_24dp).into(heartImage);
+                                Log.d("updatepostlikes no like", Integer.toString(list.size()) + " " + postID);
+                            }
+                            else {
+                                Glide.with(context).load(R.drawable.ic_favorite_grey600_24dp).into(heartImage);
+                                Log.d("updatepostlikes like", Integer.toString(list.size()) + " " + postID);
+                            }
+                        }
+                        else {
+                            Log.d("checking likes error", e.toString());
+                        }
+                    }
+                });
+            }
         }
     }
 

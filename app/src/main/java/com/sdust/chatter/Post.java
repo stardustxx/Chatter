@@ -52,7 +52,7 @@ public class Post extends Observable{
     public void grabPost(final boolean addingNewOnes){
         ParseGeoPoint userLocation = (ParseGeoPoint) ParseUser.getCurrentUser().get("Location");
         ParseQuery<ParseUser> parseUserQuery  = ParseUser.getQuery();
-        parseUserQuery.whereWithinKilometers("Location", userLocation, 10.0);
+        parseUserQuery.whereWithinKilometers("Location", userLocation, 50.0);
         parseUserQuery.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(final List<ParseUser> nearUsers, ParseException e) {

@@ -33,6 +33,7 @@ public class profileActivity extends AppCompatActivity implements Observer {
         final LinearLayoutManager layoutManager;
 
         toolbar = (Toolbar) findViewById(R.id.appBar);
+        toolbar.setTitle("Profile");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
