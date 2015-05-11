@@ -31,9 +31,13 @@
     <string name="password_confirm_hint">Retype Password</string>
     <string name="title_activity_splash">splashActivity</string>
 
+    <!-- Menu-->
     <string name="menu_title_profile">Profile</string>
     <string name="menu_title_currentUser">Current User</string>
     <string name="menu_title_logoff">Log Off</string>
+    <string name="menu_title_refresh">Refresh</string>
+    <string name="menu_title_camera">Camera</string>
+    <string name="menu_title_library">Library</string>
     <string name="title_activity_profile">profileActivity</string>
 
     <string name="new_menu_post">Post</string>

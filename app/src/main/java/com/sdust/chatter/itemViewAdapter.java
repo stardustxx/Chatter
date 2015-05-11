@@ -2,7 +2,6 @@ package com.sdust.chatter;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Display;
@@ -12,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.parse.DeleteCallback;
@@ -23,7 +23,6 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -40,7 +39,6 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
         inflater = LayoutInflater.from(context);
         this.feedItemList = feedItemList;
         this.context = context;
-//        Fresco.initialize(context);
     }
 
     @Override
@@ -67,14 +65,12 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
         viewHolder.numberOfLikes.setText(Integer.toString(current.getInt("Likes")));
         viewHolder.updatePostLikes(current.getObjectId(), true);
         ParseFile feedImage = (ParseFile) current.get("feedImage");
-        Log.d("feedImage", feedImage.getUrl());
-        Glide.with(context).load(feedImage.getUrl()).placeholder(R.drawable.twitter).override(picWidth, picHeight).centerCrop().crossFade().into(viewHolder.imageView);
+        Glide.with(context).load(feedImage.getUrl()).placeholder(R.drawable.logo).override(picWidth, picHeight).centerCrop().crossFade().into(viewHolder.imageView);
     }
 
     public void addItem(List<ParseObject> newItems){
         feedItemList.addAll(newItems);
         notifyItemInserted(feedItemList.size());
-        Log.d("List Size", Integer.toString(feedItemList.size()));
     }
 
     @Override
@@ -95,7 +91,6 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
             numberOfLikes = (TextView) itemView.findViewById(R.id.numberOfLikes);
             imageView = (ImageView) itemView.findViewById(R.id.feedImage);
             heartImage = (ImageView) itemView.findViewById(R.id.heart);
-//            draweeView = (SimpleDraweeView) itemView.findViewById(R.id.feedImage);
         }
 
         @Override
@@ -147,7 +142,7 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
                         }
                     }
                     else {
-                        Log.d("error", e.toString());
+                        Toast.makeText(context, "Error in updating likes", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -171,7 +166,6 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
                                     if (e == null) {
                                         parseObject.put("Likes", resultSize);
                                         parseObject.saveInBackground();
-//                                    numberOfLikes.setText(Integer.toString(resultSize));
                                     }
                                 }
                             });
@@ -180,7 +174,6 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
                 });
             }
             else {
-                Log.d("updatepostlikes", "updating");
                 ParseQuery<ParseObject> query = ParseQuery.getQuery("Likes");
                 query.whereEqualTo("Post", postID);
                 query.whereEqualTo("User", ParseUser.getCurrentUser());
@@ -190,15 +183,13 @@ public class itemViewAdapter extends RecyclerView.Adapter<itemViewAdapter.myView
                         if (e == null){
                             if (list.size() == 0){
                                 Glide.with(context).load(R.drawable.ic_favorite_outline_grey600_24dp).into(heartImage);
-                                Log.d("updatepostlikes no like", Integer.toString(list.size()) + " " + postID);
                             }
                             else {
                                 Glide.with(context).load(R.drawable.ic_favorite_grey600_24dp).into(heartImage);
-                                Log.d("updatepostlikes like", Integer.toString(list.size()) + " " + postID);
                             }
                         }
                         else {
-                            Log.d("checking likes error", e.toString());
+                            Toast.makeText(context, "Error in updating post likes", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

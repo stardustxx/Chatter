@@ -8,7 +8,24 @@
     <item
         android:id="@+id/postButton"
         android:title="@string/new_menu_post"
-        android:orderInCategory="5"
-        app:showAsAction="always"
+        android:icon="@drawable/ic_check_white_24dp"
+        android:orderInCategory="50"
+        app:showAsAction="ifRoom"
         />
+    <item
+        android:id="@+id/camera"
+        android:title="@string/menu_title_camera"
+        android:icon="@drawable/ic_camera_alt_white_24dp"
+        android:orderInCategory="45"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/library"
+        android:title="@string/menu_title_library"
+        android:icon="@drawable/ic_photo_library_white_24dp"
+        android:orderInCategory="40"
+        app:showAsAction="ifRoom"
+        />
+
 </menu>

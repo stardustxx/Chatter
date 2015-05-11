@@ -45,9 +45,6 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
     private static final String MY_FLURRY_APIKEY = "QNN2GXSTBN3G7M4CY7S8";
 
     private int pastVisibleItems, visibleItemCount, totalItemCount;
-    private boolean loading = true;
-//    private Date lastPositionDate;
-//    private Boolean needToLoad = false;
 
     private Post post;
 
@@ -102,8 +99,6 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, newActivity.class);
-                //startActivity(intent);
-//                startActivityForResult(intent, 0, ActivityOptions.makeSceneTransitionAnimation(MainActivity.this).toBundle());
                 startActivityForResult(intent, 0);
             }
         });
@@ -116,19 +111,14 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
                 visibleItemCount = layoutManager.getChildCount();
                 totalItemCount = layoutManager.getItemCount();
                 pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-                Log.d("visibleItemCount", Integer.toString(visibleItemCount));
-                Log.d("totalItemCount", Integer.toString(totalItemCount));
-                Log.d("pastVisibleItem", Integer.toString(pastVisibleItems));
 
 //                itemViewAdapter.setClickListener(MainActivity.this);
 
                 if (pastVisibleItems + visibleItemCount >= totalItemCount && !post.isNeedToLoad()){
-                    Log.d("layout manager status", "last row reached");
                     Toast.makeText(MainActivity.this, "Loading", Toast.LENGTH_SHORT).show();
                     post.setNeedToLoad(true);
                     post.grabPost(true);
                 }
-                Log.d("scrolling", "scrolling");
             }
         });
     }
@@ -141,8 +131,8 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
     }
 
     public void updateLocation(final boolean grabPostToo, final boolean updateAnyway){
-        boolean gpsEnabled = false;
-        boolean networkEnabled = false;
+//        boolean gpsEnabled = false;
+//        boolean networkEnabled = false;
         final float[] distanceResult = new float[1];
 
         // Acquire a reference to the system Location Manager
@@ -155,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
                 // Called when a new location is found by the network location provider.
                 final double latitude = location.getLatitude();           // x
                 final double longitude = location.getLongitude();         // y
-                Log.d("position", Double.toString(latitude) + " " + Double.toString(longitude));
 
                 final ParseGeoPoint currentLocation = new ParseGeoPoint(latitude, longitude);
                 ParseUser user = ParseUser.getCurrentUser();
@@ -168,32 +157,27 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
                             ParseUser userFound = parseUsers.get(0);
                             // Checking the distance between current position and server user position
                             ParseGeoPoint serverUserLocation = (ParseGeoPoint) userFound.get("Location");
-                            Log.d("parse lat", Double.toString(serverUserLocation.getLatitude()));
-                            Log.d("parse long", Double.toString(serverUserLocation.getLongitude()));
                             Location.distanceBetween(serverUserLocation.getLatitude(), serverUserLocation.getLongitude(), latitude, longitude, distanceResult);
-                            Log.d("distance result", Float.toString(distanceResult[0]));
                             userFound.put("Location", currentLocation);
                             userFound.saveInBackground();
-                            Toast.makeText(MainActivity.this, currentLocation.toString(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(MainActivity.this, currentLocation.toString(), Toast.LENGTH_SHORT).show();
                             ParseUser.getCurrentUser().refreshInBackground(new RefreshCallback() {
                                 @Override
                                 public void done(ParseObject parseObject, ParseException e) {
                                     if (e != null) {
-                                        Log.d("um", "um");
+                                        Toast.makeText(MainActivity.this, "Error in updating user data", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
-//                            if (grabPostToo) {
-//                                grabPost();
-//                            }
                             if (updateAnyway){
                                 post.grabPost(false);
                             }
                             else if (distanceResult[0] > 10000 && grabPostToo) {
                                 post.grabPost(false);
                             }
-                        } else {
-                            Log.d("error", e.toString());
+                        }
+                        else {
+                            Toast.makeText(MainActivity.this, "Error in looking up user", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
@@ -267,32 +251,36 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         if (id == R.id.profile) {
             startActivity(new Intent(MainActivity.this, profileActivity.class));
         }
-        else if (id == R.id.currentUser){
-            if (ParseUser.getCurrentUser().getUsername() != null) {
-                Toast.makeText(MainActivity.this, ParseUser.getCurrentUser().getUsername(), Toast.LENGTH_SHORT).show();
-            }
-            else {
-                Toast.makeText(MainActivity.this, "null", Toast.LENGTH_SHORT).show();
-            }
+        else if(id == R.id.refresh){
+            updateLocation(true, true);
+            Toast.makeText(MainActivity.this, "Refreshing", Toast.LENGTH_SHORT).show();
         }
-        else if (id == R.id.location){
-            updateLocation(false, false);
-        }
+//        else if (id == R.id.currentUser){
+//            if (ParseUser.getCurrentUser().getUsername() != null) {
+//                Toast.makeText(MainActivity.this, ParseUser.getCurrentUser().getUsername(), Toast.LENGTH_SHORT).show();
+//            }
+//            else {
+//                Toast.makeText(MainActivity.this, "null", Toast.LENGTH_SHORT).show();
+//            }
+//        }
+//        else if (id == R.id.location){
+//            updateLocation(false, false);
+//        }
+//        else if (id == R.id.around){
+//            int aroundMeNumber;
+//            aroundMeNumber = post.getAroundMeNumber();
+//            Toast.makeText(MainActivity.this, "Number of People around: " + Integer.toString(aroundMeNumber), Toast.LENGTH_SHORT).show();
+//        }
         else if (id == R.id.logOff){
             ParseUser.logOut();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
-        }
-        else if (id == R.id.around){
-            int aroundMeNumber;
-            aroundMeNumber = post.getAroundMeNumber();
-            Toast.makeText(MainActivity.this, "Number of People around: " + Integer.toString(aroundMeNumber), Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -308,7 +296,6 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
 
     @Override
     public void update(Observable observable, Object data) {
-        Log.d("getting notified", "hiiii");
         post.itemViewAdapter.setClickListener(MainActivity.this);
     }
 }

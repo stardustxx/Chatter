@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -52,15 +51,13 @@ public class Post extends Observable{
     public void grabPost(final boolean addingNewOnes){
         ParseGeoPoint userLocation = (ParseGeoPoint) ParseUser.getCurrentUser().get("Location");
         ParseQuery<ParseUser> parseUserQuery  = ParseUser.getQuery();
-        parseUserQuery.whereWithinKilometers("Location", userLocation, 50.0);
+        parseUserQuery.whereWithinKilometers("Location", userLocation, 1000.0);
         parseUserQuery.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(final List<ParseUser> nearUsers, ParseException e) {
                 if (e == null) {
-                    Toast.makeText(context, "People around me: " + Integer.toString(nearUsers.size()), Toast.LENGTH_SHORT).show();
-                    Log.d("around", Integer.toString(nearUsers.size()));
-                    Log.d("result", nearUsers.toString());
                     aroundMeNumber = nearUsers.size() - 1;
+                    Toast.makeText(context, "Number of people around: " + Integer.toString(aroundMeNumber), Toast.LENGTH_SHORT).show();
 
                     // Grabbing posts that are created by the people that are near the current user
                     ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Post");
@@ -70,7 +67,6 @@ public class Post extends Observable{
                         nearUsersUsername[i] = nearUsers.get(i).getUsername();
                     }
                     nearUsersUsername[nearUsers.size()] = ParseUser.getCurrentUser().getUsername();
-                    Log.d("array content", nearUsersUsername.toString());
                     query.whereContainedIn("User", Arrays.asList(nearUsersUsername));
                     query.orderByDescending("createdAt");
                     query.setLimit(10);
@@ -80,7 +76,6 @@ public class Post extends Observable{
                     query.findInBackground(new FindCallback<ParseObject>() {
                         @Override
                         public void done(List<ParseObject> posts, ParseException e) {
-                            Log.d("Done", "Retrieved: " + posts.size());
                             if (posts.size() == 0){
                                 // Doing nothing
                                 Toast.makeText(context, "Nothing to show", Toast.LENGTH_SHORT).show();
@@ -103,7 +98,7 @@ public class Post extends Observable{
                         }
                     });
                 } else {
-                    Log.d("Error", "um");
+                    Toast.makeText(context, "Error in updating post", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -111,7 +106,6 @@ public class Post extends Observable{
 
     public void searchPost(final boolean addingNewOnes){
         // Grabbing posts that are created by the people that are near the current user
-        Log.d("searching", "true");
         ParseQuery<ParseObject> query = new ParseQuery<ParseObject>("Post");
         query.whereEqualTo("User", parseUser.getUsername());
         query.orderByDescending("createdAt");
@@ -122,7 +116,6 @@ public class Post extends Observable{
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> posts, ParseException e) {
-                Log.d("Done", "Retrieved: " + posts.size());
                 if (posts.size() == 0){
                     // Doing nothing
                     Toast.makeText(context, "Nothing to show", Toast.LENGTH_SHORT).show();

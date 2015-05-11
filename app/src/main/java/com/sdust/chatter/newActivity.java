@@ -42,8 +42,6 @@ public class newActivity extends AppCompatActivity {
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private static final int CHOOSE_IMAGE_REQUEST = 200;
 
-    Button shutterBtn;
-    Button photoBtn;
     Uri fileUri;
     TextView desLabel;
     EditText desBox;
@@ -62,7 +60,6 @@ public class newActivity extends AppCompatActivity {
                 case Activity.RESULT_OK:
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inSampleSize = 4;                                   // Reduced size of the taken picture by 0.25
-                    Log.d("mediaFile getPath()", mediaFile.getPath());
                     Bitmap image = BitmapFactory.decodeFile(mediaFile.getPath(), options);
                     Glide.with(newActivity.this).load(mediaFile.getPath()).override(picWidth, picHeight).centerCrop().crossFade().into(postImage);
                     ByteArrayOutputStream stream = new ByteArrayOutputStream(); // Convert image to byte
@@ -95,14 +92,14 @@ public class newActivity extends AppCompatActivity {
                         Toast.makeText(newActivity.this, "Image selected", Toast.LENGTH_SHORT).show();
                     }
                     catch (Exception e){
-                        Log.d("error", e.toString());
+//                        Log.d("error", e.toString());
                     }
                     break;
                 case Activity.RESULT_CANCELED:
-                    Log.d("choose image", "canceled");
+//                    Log.d("choose image", "canceled");
                     break;
                 default:
-                    Log.d("choose image default", "nothing to see");
+//                    Log.d("choose image default", "nothing to see");
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -114,47 +111,13 @@ public class newActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.appBar);
-        toolbar.setTitle("Creating new post");
+        toolbar.setTitle("New post");
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         windowsSize();
         desBox = (EditText) findViewById(R.id.desBox);
         postImage = (ImageView) findViewById(R.id.postImage);
-
-        photoBtn = (Button) findViewById(R.id.photoBtn);
-        photoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                // show only images and nothing else
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                // Always shows the chooser if multiple options are available
-                startActivityForResult(Intent.createChooser(intent, "Select image"), CHOOSE_IMAGE_REQUEST);
-            }
-        });
-
-        shutterBtn = (Button) findViewById(R.id.shutter);
-        shutterBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create Media File to save image
-                mediaFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-                if (mediaFile == null) {
-                    Toast.makeText(newActivity.this, "Error while creating media file.", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                fileUri = Uri.fromFile(mediaFile);
-
-                // Start camera intent
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // Set the image file name
-                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-
-                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE); // Put intent, and also checking which activity is calling for camera
-            }
-        });
     }
 
     private void uploadPost(){
@@ -185,7 +148,7 @@ public class newActivity extends AppCompatActivity {
         // Create the storage directory if it does not exist
         if (! mediaStorageDir.exists()){
             if (! mediaStorageDir.mkdirs()){
-                Log.d("Chatter", "failed to create directory");
+//                Log.d("Chatter", "failed to create directory");
                 return null;
             }
         }
@@ -231,11 +194,34 @@ public class newActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        else if (id == R.id.postButton){
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+        if (id == R.id.postButton){
             uploadPost();
+        }
+        else if (id == R.id.camera){
+            // Create Media File to save image
+            mediaFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+            if (mediaFile == null) {
+                Toast.makeText(newActivity.this, "Error while creating media file.", Toast.LENGTH_LONG).show();
+            }
+            fileUri = Uri.fromFile(mediaFile);
+
+            // Start camera intent
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // Set the image file name
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+
+            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE); // Put intent, and also checking which activity is calling for camera
+        }
+        else if (id == R.id.library){
+            Intent intent = new Intent();
+            // show only images and nothing else
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            // Always shows the chooser if multiple options are available
+            startActivityForResult(Intent.createChooser(intent, "Select image"), CHOOSE_IMAGE_REQUEST);
         }
 
         return super.onOptionsItemSelected(item);

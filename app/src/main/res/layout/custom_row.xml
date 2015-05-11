@@ -36,7 +36,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/twitter"
+                android:src="@drawable/logo"
                 android:id="@+id/feedImage"
                 android:adjustViewBounds="true"
                 android:layout_below="@+id/nickname"

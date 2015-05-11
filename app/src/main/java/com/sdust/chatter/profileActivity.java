@@ -51,19 +51,14 @@ public class profileActivity extends AppCompatActivity implements Observer {
                 visibleItemCount = layoutManager.getChildCount();
                 totalItemCount = layoutManager.getItemCount();
                 pastVisibleItems = layoutManager.findFirstVisibleItemPosition();
-                Log.d("visibleItemCount", Integer.toString(visibleItemCount));
-                Log.d("totalItemCount", Integer.toString(totalItemCount));
-                Log.d("pastVisibleItem", Integer.toString(pastVisibleItems));
 
 //                itemViewAdapter.setClickListener(MainActivity.this);
 
                 if (pastVisibleItems + visibleItemCount >= totalItemCount && !post.isNeedToLoad()){
-                    Log.d("layout manager status", "last row reached");
                     Toast.makeText(profileActivity.this, "Loading", Toast.LENGTH_SHORT).show();
                     post.setNeedToLoad(true);
                     post.searchPost(true);
                 }
-                Log.d("scrolling", "scrolling");
             }
         });
 
@@ -86,9 +81,9 @@ public class profileActivity extends AppCompatActivity implements Observer {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         return super.onOptionsItemSelected(item);
     }

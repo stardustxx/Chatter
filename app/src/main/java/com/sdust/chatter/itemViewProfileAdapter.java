@@ -75,7 +75,7 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             ((profileInfoViewHolder) viewHolder).userName.setText(currentUsername);
 
             //Find drawable for the scenery
-            Glide.with(context).load(R.drawable.scenery).into(((profileInfoViewHolder) viewHolder).profileBackground);
+//            Glide.with(context).load(R.drawable.scenery).into(((profileInfoViewHolder) viewHolder).profileBackground);
             // Need code for grabbing profile pic which I don't have right now
         }
         else if (viewHolder instanceof myViewHolder){
@@ -84,15 +84,13 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 //            viewHolder.feedUser.setText(current.get("User").toString());
 //            viewHolder.numberOfLikes.setText(Integer.toString(current.getInt("Likes")));
             ParseFile feedImage = (ParseFile) current.get("feedImage");
-            Log.d("feedImage profile", feedImage.getUrl());
-            Glide.with(context).load(feedImage.getUrl()).placeholder(R.drawable.twitter).override(picWidth, picHeight).centerCrop().into(((myViewHolder) viewHolder).postImage);
+            Glide.with(context).load(feedImage.getUrl()).placeholder(R.drawable.logo).override(picWidth, picHeight).centerCrop().into(((myViewHolder) viewHolder).postImage);
         }
     }
 
     public void addItem(List<ParseObject> newItems){
         feedItemList.addAll(newItems);
         notifyItemInserted(feedItemList.size());
-        Log.d("List Size", Integer.toString(feedItemList.size()));
     }
 
     @Override
@@ -102,13 +100,14 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     class profileInfoViewHolder extends RecyclerView.ViewHolder {
         TextView userName, userDesc;
-        ImageView userPic, profileBackground;
+//        ImageView userPic;
+//        ImageView profileBackground;
 
         public profileInfoViewHolder(View itemView) {
             super(itemView);
             userName = (TextView) itemView.findViewById(R.id.profileName);
-            userPic = (ImageView) itemView.findViewById(R.id.profileImage);
-            profileBackground = (ImageView) itemView.findViewById(R.id.profileBackground);
+//            userPic = (ImageView) itemView.findViewById(R.id.profileImage);
+//            profileBackground = (ImageView) itemView.findViewById(R.id.profileBackground);
         }
     }
 
@@ -116,7 +115,6 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     class myViewHolder extends RecyclerView.ViewHolder {
         TextView feedDesc, feedUser, numberOfLikes;
         ImageView postImage;
-//        SimpleDraweeView draweeView;
 
         public myViewHolder(View itemView) {
             super(itemView);
@@ -125,7 +123,6 @@ public class itemViewProfileAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 //            feedUser = (TextView) itemView.findViewById(R.id.nickname);
 //            numberOfLikes = (TextView) itemView.findViewById(R.id.numberOfLikes);
             postImage = (ImageView) itemView.findViewById(R.id.feedImage);
-//            draweeView = (SimpleDraweeView) itemView.findViewById(R.id.feedImage);
         }
 
 //        @Override

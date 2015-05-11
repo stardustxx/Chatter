@@ -30,7 +30,7 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/twitter"
+            android:src="@drawable/logo"
             android:id="@+id/feedImage"
             android:adjustViewBounds="true"
             android:layout_below="@+id/nickname"
@@ -45,10 +45,11 @@
             android:id = "@+id/feedDesc"
             android:layout_below="@+id/feedImage"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="24dp"
+            android:textSize="15sp"
             />
 
         <!--<TextView-->
