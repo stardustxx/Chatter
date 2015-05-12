@@ -49,6 +49,7 @@ public class newActivity extends AppCompatActivity {
     File mediaFile;
     byte[] imageByte;
     int picWidth, picHeight;
+    Button cameraBtn, galleryBtn;
 
     ParseObject post = new ParseObject("Post");
     ParseFile feedImage;
@@ -117,7 +118,41 @@ public class newActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         windowsSize();
         desBox = (EditText) findViewById(R.id.desBox);
+        desBox.setBackground(null);
         postImage = (ImageView) findViewById(R.id.postImage);
+        cameraBtn = (Button) findViewById(R.id.camera);
+        galleryBtn = (Button) findViewById(R.id.gallery);
+
+        cameraBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Create Media File to save image
+                mediaFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+                if (mediaFile == null) {
+                    Toast.makeText(newActivity.this, "Error while creating media file.", Toast.LENGTH_LONG).show();
+                }
+                fileUri = Uri.fromFile(mediaFile);
+
+                // Start camera intent
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // Set the image file name
+                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+
+                startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE); // Put intent, and also checking which activity is calling for camera
+            }
+        });
+
+        galleryBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                // show only images and nothing else
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                // Always shows the chooser if multiple options are available
+                startActivityForResult(Intent.createChooser(intent, "Select image"), CHOOSE_IMAGE_REQUEST);
+            }
+        });
     }
 
     private void uploadPost(){
@@ -200,29 +235,29 @@ public class newActivity extends AppCompatActivity {
         if (id == R.id.postButton){
             uploadPost();
         }
-        else if (id == R.id.camera){
-            // Create Media File to save image
-            mediaFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
-            if (mediaFile == null) {
-                Toast.makeText(newActivity.this, "Error while creating media file.", Toast.LENGTH_LONG).show();
-            }
-            fileUri = Uri.fromFile(mediaFile);
-
-            // Start camera intent
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // Set the image file name
-            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-
-            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE); // Put intent, and also checking which activity is calling for camera
-        }
-        else if (id == R.id.library){
-            Intent intent = new Intent();
-            // show only images and nothing else
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            // Always shows the chooser if multiple options are available
-            startActivityForResult(Intent.createChooser(intent, "Select image"), CHOOSE_IMAGE_REQUEST);
-        }
+//        else if (id == R.id.camera){
+//            // Create Media File to save image
+//            mediaFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+//            if (mediaFile == null) {
+//                Toast.makeText(newActivity.this, "Error while creating media file.", Toast.LENGTH_LONG).show();
+//            }
+//            fileUri = Uri.fromFile(mediaFile);
+//
+//            // Start camera intent
+//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);  // Set the image file name
+//            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+//
+//            startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE); // Put intent, and also checking which activity is calling for camera
+//        }
+//        else if (id == R.id.library){
+//            Intent intent = new Intent();
+//            // show only images and nothing else
+//            intent.setType("image/*");
+//            intent.setAction(Intent.ACTION_GET_CONTENT);
+//            // Always shows the chooser if multiple options are available
+//            startActivityForResult(Intent.createChooser(intent, "Select image"), CHOOSE_IMAGE_REQUEST);
+//        }
 
         return super.onOptionsItemSelected(item);
     }
