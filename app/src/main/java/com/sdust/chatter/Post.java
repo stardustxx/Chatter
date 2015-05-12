@@ -52,11 +52,14 @@ public class Post extends Observable{
         ParseGeoPoint userLocation = (ParseGeoPoint) ParseUser.getCurrentUser().get("Location");
         ParseQuery<ParseUser> parseUserQuery  = ParseUser.getQuery();
         parseUserQuery.whereWithinKilometers("Location", userLocation, 1000.0);
+//        Log.d("location", userLocation.toString());
         parseUserQuery.findInBackground(new FindCallback<ParseUser>() {
             @Override
             public void done(final List<ParseUser> nearUsers, ParseException e) {
                 if (e == null) {
-                    aroundMeNumber = nearUsers.size() - 1;
+                    if (nearUsers.size() != 0){
+                        aroundMeNumber = nearUsers.size() - 1;
+                    }
                     Toast.makeText(context, "Number of people around: " + Integer.toString(aroundMeNumber), Toast.LENGTH_SHORT).show();
 
                     // Grabbing posts that are created by the people that are near the current user

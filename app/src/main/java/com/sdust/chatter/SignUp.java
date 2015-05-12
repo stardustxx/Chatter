@@ -1,5 +1,6 @@
 package com.sdust.chatter;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseUser;
@@ -72,8 +74,8 @@ public class SignUp extends AppCompatActivity {
         });
     }
 
-    private void registration(String username, String email, String password){
-        ParseGeoPoint currentLocation = new ParseGeoPoint(20, 20);
+    private void registration(final String username, String email, final String password){
+        ParseGeoPoint currentLocation = new ParseGeoPoint(18.8, 172.2);
         User.setUsername(username);
         User.setEmail(email);
         User.setPassword(password);
@@ -81,17 +83,31 @@ public class SignUp extends AppCompatActivity {
         User.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
-                if (e == null){
+                if (e == null) {
                     Toast.makeText(SignUp.this, "Registration Successful", Toast.LENGTH_SHORT).show();
+                    signInUser(username, password);
                     SignUp.this.finish();
-                }
-                else {
+                } else {
                     Toast.makeText(SignUp.this, "Something is wrong", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    private void signInUser(String username, String password){
+        ParseUser.logInInBackground(username, password, new LogInCallback() {
+            @Override
+            public void done(ParseUser parseUser, ParseException e) {
+                if (e == null) {
+                    Toast.makeText(SignUp.this, "Successfully Signed In", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SignUp.this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(SignUp.this, "Please double check your username and password", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

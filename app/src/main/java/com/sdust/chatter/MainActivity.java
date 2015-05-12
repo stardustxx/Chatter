@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
             @Override
             public void onRefresh() {
                 updateLocation(true, true);
-                swipeRefreshLayout.setRefreshing(false);
+//                swipeRefreshLayout.setRefreshing(false);
                 Toast.makeText(MainActivity.this, "Refreshing", Toast.LENGTH_SHORT).show();
             }
         });
@@ -89,8 +89,9 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
         post.addObserver(this);
 
 //        itemViewAdapter.setClickListener(MainActivity.this);
-        post.grabPost(false);
-        updateLocation(true, false);
+//        post.grabPost(false);
+        updateLocation(true, true);                                                        // Update location and update feeds
+        swipeRefreshLayout.setRefreshing(true);
 
         // Set up FAB
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -164,17 +165,20 @@ public class MainActivity extends AppCompatActivity implements itemViewAdapter.C
                             ParseUser.getCurrentUser().refreshInBackground(new RefreshCallback() {
                                 @Override
                                 public void done(ParseObject parseObject, ParseException e) {
-                                    if (e != null) {
+                                    if (e == null){
+                                        if (updateAnyway){
+                                            post.grabPost(false);
+                                        }
+                                        else if (distanceResult[0] > 10000 && grabPostToo) {
+                                            post.grabPost(false);
+                                        }
+                                        swipeRefreshLayout.setRefreshing(false);
+                                    }
+                                    else {
                                         Toast.makeText(MainActivity.this, "Error in updating user data", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
-                            if (updateAnyway){
-                                post.grabPost(false);
-                            }
-                            else if (distanceResult[0] > 10000 && grabPostToo) {
-                                post.grabPost(false);
-                            }
                         }
                         else {
                             Toast.makeText(MainActivity.this, "Error in looking up user", Toast.LENGTH_SHORT).show();
