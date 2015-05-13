@@ -1,6 +1,12 @@
 package com.sdust.chatter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -12,6 +18,7 @@ import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.RefreshCallback;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -24,10 +31,16 @@ public class Post extends Observable{
     public itemViewProfileAdapter itemViewProfileAdapter;
     private Context context;
     private ParseUser parseUser;
+    public LocationManager locationManager;
+    public LocationListener locationListener;
 
     private int aroundMeNumber = 0;
     private Date lastPositionDate;
     private boolean needToLoad = false;
+
+    public Post(Context context){
+        this.context = context;
+    }
 
     public Post(Context context, RecyclerView recyclerView, itemViewAdapter itemViewAdapter){
         this.context = context;
@@ -140,6 +153,117 @@ public class Post extends Observable{
                 }
             }
         });
+    }
+
+    public void updateLocation(){
+//        boolean gpsEnabled = false;
+//        boolean networkEnabled = false;
+//        final float[] distanceResult = new float[1];
+
+        // Acquire a reference to the system Location Manager
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+
+        // Define a listener that responds to location updates
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                // Called when a new location is found by the network location provider.
+                final double latitude = location.getLatitude();           // x
+                final double longitude = location.getLongitude();         // y
+
+                final ParseGeoPoint currentLocation = new ParseGeoPoint(latitude, longitude);
+                ParseUser user = ParseUser.getCurrentUser();
+                ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+                userQuery.whereEqualTo("objectId", user.getObjectId());
+                userQuery.findInBackground(new FindCallback<ParseUser>() {
+                    @Override
+                    public void done(List<ParseUser> parseUsers, ParseException e) {
+                        if (e == null) {
+                            ParseUser userFound = parseUsers.get(0);
+                            // Checking the distance between current position and server user position
+//                            ParseGeoPoint serverUserLocation = (ParseGeoPoint) userFound.get("Location");
+//                            Location.distanceBetween(serverUserLocation.getLatitude(), serverUserLocation.getLongitude(), latitude, longitude, distanceResult);
+                            userFound.put("Location", currentLocation);
+                            userFound.saveInBackground();
+//                            Toast.makeText(MainActivity.this, currentLocation.toString(), Toast.LENGTH_SHORT).show();
+                            ParseUser.getCurrentUser().refreshInBackground(new RefreshCallback() {
+                                @Override
+                                public void done(ParseObject parseObject, ParseException e) {
+//                                    if (e == null){
+//                                        if (updateAnyway){
+//                                            post.grabPost(false);
+//                                        }
+//                                        else if (distanceResult[0] > 10000 && grabPostToo) {
+//                                            post.grabPost(false);
+//                                        }
+//                                        swipeRefreshLayout.setRefreshing(false);
+//                                    }
+//                                    else {
+//                                        Toast.makeText(MainActivity.this, "Error in updating user data", Toast.LENGTH_SHORT).show();
+//                                    }
+                                    if (e != null) {
+                                        Toast.makeText(context, "Error in updating user data", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                        else {
+                            Toast.makeText(context, "Error in looking up user", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+//        try {
+//            gpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//        }
+//        catch (Exception e){
+//            Log.d("GPS Enabled", "False");
+//        }
+//
+//        try {
+//            networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+//        }
+//        catch (Exception e){
+//            Log.d("Network Enabled", "False");
+//        }
+//
+//        if (!gpsEnabled && !networkEnabled){
+//            Toast.makeText(MainActivity.this, "Location Provider is not available", Toast.LENGTH_SHORT).show();
+//        }
+
+//        if (gpsEnabled){
+//            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 600000, 1000, locationListener);
+//        }
+//        else if (networkEnabled){
+//            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 600000, 1000, locationListener);
+//        }
+
+        // Register the listener with the Location Manager to receive location updates
+        // Can also set interval between each check
+        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 600000, 1000, locationListener);
+        }
+        else {
+            Toast.makeText(context, "It appears you don't have location service turned on", Toast.LENGTH_SHORT).show();
+            context.startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+        }
     }
 
     public int getAroundMeNumber() {

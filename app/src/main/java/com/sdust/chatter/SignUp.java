@@ -2,7 +2,6 @@ package com.sdust.chatter;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -75,7 +74,7 @@ public class SignUp extends AppCompatActivity {
     }
 
     private void registration(final String username, String email, final String password){
-        ParseGeoPoint currentLocation = new ParseGeoPoint(18.8, 172.2);
+        ParseGeoPoint currentLocation = new ParseGeoPoint(49.2827, -123.1207);
         User.setUsername(username);
         User.setEmail(email);
         User.setPassword(password);
